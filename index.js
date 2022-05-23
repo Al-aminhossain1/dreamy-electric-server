@@ -11,14 +11,12 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ohevh.mongodb.net/?retryWrites=true&w=majority`;
 
-console.log(uri);
-
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 async function run() {
     try {
         client.connect();
         const toolsCollection = client.db("dreamy-electric").collection("tools");
-        console.log('database connected');
+        const ordersCollection = client.db("dreamy-electric").collection("orders");
 
         // Get Tools
         app.get('/tool', async (req, res) => {
@@ -30,10 +28,17 @@ async function run() {
         app.get('/tool/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            console.log(query);
             const tools = await toolsCollection.findOne(query);
             res.send(tools);
         })
+        // Post tools
+        app.post('/order', async (req, res) => {
+            const orders = req.body;
+            const result = await ordersCollection.insertOne(orders);
+            res.send(result);
+
+        })
+
     }
     finally {
 
