@@ -17,6 +17,7 @@ async function run() {
         client.connect();
         const toolsCollection = client.db("dreamy-electric").collection("tools");
         const ordersCollection = client.db("dreamy-electric").collection("orders");
+        const reviewsCollection = client.db("dreamy-electric").collection("reviews");
 
         // Get Tools
         app.get('/tool', async (req, res) => {
@@ -38,17 +39,19 @@ async function run() {
             res.send(result);
 
         })
-        // Get order 
-        // app.get('/order', async (req, res) => {
-        //     const query = {};
-        //     const orders = await ordersCollection.find(query).toArray();
-        //     res.send(orders);
-        // })
+        // Get order use React query
+
         app.get('/order', async (req, res) => {
             const customer = req.query.customer;
             const query = { customer: customer };
             const orders = await ordersCollection.find(query).toArray();
             res.send(orders);
+        })
+        // Post Review
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
         })
 
     }
