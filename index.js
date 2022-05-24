@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
+const query = require('express/lib/middleware/query');
 require('dotenv').config()
 // Use Middleware
 
@@ -52,6 +53,14 @@ async function run() {
             const review = req.body;
             const result = await reviewsCollection.insertOne(review);
             res.send(result);
+        })
+
+        // Get Review
+
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const reviews = await reviewsCollection.find().toArray();
+            res.send(reviews);
         })
 
     }
