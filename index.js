@@ -31,12 +31,24 @@ async function run() {
             const tools = await toolsCollection.findOne(query);
             res.send(tools);
         })
-        // Post tools
+        // Post order
         app.post('/order', async (req, res) => {
             const orders = req.body;
             const result = await ordersCollection.insertOne(orders);
             res.send(result);
 
+        })
+        // Get order 
+        // app.get('/order', async (req, res) => {
+        //     const query = {};
+        //     const orders = await ordersCollection.find(query).toArray();
+        //     res.send(orders);
+        // })
+        app.get('/order', async (req, res) => {
+            const customer = req.query.customer;
+            const query = { customer: customer };
+            const orders = await ordersCollection.find(query).toArray();
+            res.send(orders);
         })
 
     }
