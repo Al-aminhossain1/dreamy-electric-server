@@ -70,6 +70,21 @@ async function run() {
             const reviews = await reviewsCollection.find().toArray();
             res.send(reviews);
         })
+        // Get All Users
+        app.get('/user', async (req, res) => {
+            const query = {};
+            const result = await usersCollection.find().toArray();
+            res.send(result);
+        })
+
+        // Get single user
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await usersCollection.findOne(query);
+            res.send(result);
+        })
+
         // Update User
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
@@ -78,6 +93,19 @@ async function run() {
             const options = { upsert: true };
             const updateDoc = {
                 $set: user
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+        // Make an Admin
+        app.put('/user/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    role: 'admin'
+                }
             };
             const result = await usersCollection.updateOne(filter, updateDoc, options);
             res.send(result);
