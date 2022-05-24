@@ -17,6 +17,7 @@ async function run() {
     try {
         client.connect();
         const toolsCollection = client.db("dreamy-electric").collection("tools");
+        const usersCollection = client.db("dreamy-electric").collection("users");
         const ordersCollection = client.db("dreamy-electric").collection("orders");
         const reviewsCollection = client.db("dreamy-electric").collection("reviews");
 
@@ -68,6 +69,18 @@ async function run() {
             const query = {};
             const reviews = await reviewsCollection.find().toArray();
             res.send(reviews);
+        })
+        // Update User
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
 
     }
