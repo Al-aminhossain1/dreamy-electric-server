@@ -97,17 +97,23 @@ async function run() {
             const result = await usersCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         })
+        // Check Admin route
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await usersCollection.findOne({ email: email });
+            const isAdmin = user.role === "admin";
+            res.send({ admin: isAdmin });
+        })
         // Make an Admin
         app.put('/user/admin/:email', async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
-            const options = { upsert: true };
             const updateDoc = {
                 $set: {
                     role: 'admin'
                 }
             };
-            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            const result = await usersCollection.updateOne(filter, updateDoc);
             res.send(result);
         })
 
